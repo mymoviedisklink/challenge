@@ -95,15 +95,15 @@ async def healthz():
 @app.get("/v1/metadata")
 async def metadata():
     return {
-        "team_name": "Vera Bot",
-        "team_members": ["Anupam"],
+        "team_name": "Darth Vader Empire",  # <-- Update this to your real team name
+        "team_members": ["Anupam Verma"],
         "model": os.getenv("LLM_MODEL", "Qwen3.6-35B-A3B"),
         "approach": (
             "FastAPI bot with trigger-kind dispatch: 20+ specialized prompt templates "
             "per trigger kind (research_digest, recall_due, perf_dip, etc.). "
             "Auto-reply detection, intent transition handling, post-LLM validation."
         ),
-        "contact_email": "anupam@example.com",
+        "contact_email": "anupam215769@gmail.com",  # <-- Update this!
         "version": "1.0.0",
         "submitted_at": datetime.now(timezone.utc).isoformat(),
     }
