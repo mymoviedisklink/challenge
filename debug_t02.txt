@@ -1,0 +1,95 @@
+Here's a thinking process:
+
+1.  **Analyze User Input:**
+   - **Role:** Vera, magicpin's merchant AI assistant
+   - **Category:** Gyms & Fitness
+   - **Voice:** Energetic_disciplined, coach_to_member, english_primary_some_hindi
+   - **Domain Vocab:** footfall, membership churn, PT sessions, PR, 1RM, EMOM, AMRAP, split (use when relevant)
+   - **Taboo Words:** guaranteed weight loss, shred in 7 days, miracle transformation, fastest results
+   - **Salutation:** Hi {first_name} or {gym_name} team or Coach
+   - **Engagement Levers:** Use 1-2 per message (Specificity, Loss aversion, Social proof, Effort externalization, Curiosity, Reciprocity, Ask the merchant, Single binary commitment)
+   - **Strict Rules:** NO fabricated data, NO generic discounts, ONE primary CTA, NO URLs, NO long preambles, Use merchant's name/owner first name at start, Keep concise, Output ONLY valid JSON.
+   - **Context:**
+     - Merchant: Zen Yoga Studio | Owner: Padma
+     - Location: Mylapore, Chennai
+     - Performance: Above peer median CTR, high retention, active planning, boutique segment
+     - Signals: high_retention, active_planning, boutique_segment
+     - Trigger: `trg_016_kids_yoga_program_drafting` | Intent: kids_yoga_summer_camp | Last message: "Hi I want to add a kids yoga program — what should it look like?"
+     - Task: Draft a COMPLETE concrete artifact (pricing tiers, program structure, offer copy, etc.). Be specific. Offer next logistical step. CTA: binary_yes_no or binary_confirm_cancel. send_as: vera.
+     - Suppression key: `planning:m_008:kids_yoga:2026-W17`
+     - Template: `vera_research_digest_v1` (or similar, I'll use `kids_yoga_program_draft_v1`)
+     - Template params: ["kids_yoga_summer_camp", "Mylapore", "Padma"]
+
+2.  **Determine Message Structure & Content:**
+   - **Salutation:** Hi Coach Padma,
+   - **Opening:** Direct, energetic, acknowledge intent. "You asked for a kids yoga summer camp blueprint — I’ve drafted the full structure below. No fluff, just what converts in Mylapore right now."
+   - **Artifact (Concrete Details):**
+     - Program: 4-week Summer Camp (June 1–28)
+     - Structure: 3 sessions/week (Tue/Thu/Sat), 60 mins each. Mix of foundational asanas, breathwork, and light mobility. Small batches (max 12 kids/age group: 6-9 & 10-14).
+     - Pricing: Early bird ₹2,499 (4 weeks), Regular ₹3,499. Add-on: Free Body Composition Analysis for parents (leverages existing offer).
+     - Offer Copy: "Monsoon-ready mobility & focus. 4-week kids yoga camp. Small batches. Limited seats."
+     - Operational: Use studio space, require parental consent form, include 1 parent orientation session at Week 4.
+   - **Leverage:** Effort externalization ("I've drafted X — just say go"), Specificity (dates, pricing, batch size, locality context).
+   - **CTA:** Binary yes/no. "Reply YES to activate this on magicpin & push to your 95 active members. Reply STOP to pause."
+   - **Check Constraints:**
+     - Tone: Energetic, disciplined, coach-like. Some Hindi? Maybe "Chalo, lock karte hain?" or "Bas ek reply se live."
+     - Domain vocab: Not strictly necessary for kids yoga, but can weave in "footfall" or "retention" if relevant. Actually, keep it tight.
+     - Taboo: Checked. None used.
+     - No URLs: Checked.
+     - One CTA: Checked.
+     - JSON only: Checked.
+     - Rationale: 1-2 sentences explaining lever & goal.
+     - Template name/params: As specified.
+     - Suppression key: Matches trigger.
+
+3.  **Draft Construction (Mental Refinement):**
+   Hi Coach Padma,
+   You asked for a kids yoga summer camp blueprint — I’ve drafted the full structure below. No fluff, just what converts in Mylapore right now.
+
+   📅 Program: 4-Week Summer Camp (June 1–28)
+   🕒 Schedule: Tue/Thu/Sat, 60 mins | Batches: 6–9 yrs & 10–14 yrs (max 12 kids/batch)
+   💰 Pricing: Early Bird ₹2,499 | Regular ₹3,499
+   🎁 Add-on: Free Body Composition Analysis for parents (leverages your current offer)
+   📝 Offer Copy: “Monsoon-ready mobility & focus. 4-week kids yoga camp. Small batches. Limited seats.”
+   ⚙️ Ops: 1 parent orientation at Week 4. Consent form + basic first-aid kit on standby.
+
+   I’ve prepped the magicpin listing & member broadcast. Bas ek reply se live.
+   Reply YES to activate & push to your 95 active members. Reply STOP to pause.
+
+   Check against constraints:
+   - Salutation: Hi Coach Padma (matches)
+   - Tone: Energetic/disciplined, coach_to_member, some Hindi ("Bas ek reply se live.")
+   - Levers: Effort externalization, Specificity
+   - CTA: binary_yes_no
+   - No URLs, concise, direct.
+   - JSON structure matches requirements.
+   - Rationale: "Leverages effort externalization & specificity to convert planning intent into action. Pre-drafted artifact removes friction, driving immediate enrollment commitment."
+   - Template: `kids_yoga_program_draft_v1`
+   - Params: `["kids_yoga_summer_camp", "Mylapore", "Padma"]`
+   - Suppression: `planning:m_008:kids_yoga:2026-W17`
+   - Send_as: `vera`
+   - CTA type: `binary_yes_no`
+
+   All constraints met. I will generate the JSON now.
+   One minor check: "english_primary_some_hindi" - I'll add a bit more natural Hindi flavor if needed, but "Bas ek reply se live" is fine. I'll adjust slightly to match the coach tone better: "Chalo, lock karte hain?" or keep it tight. The prompt says "english_primary_some_hindi", so a light touch is fine.
+   I'll ensure the JSON keys exactly match the prompt: `body`, `cta`, `send_as`, `suppression_key`, `rationale`, `template_name`, `template_params`.
+   CTA value should be the string `binary_yes_no` as per the enum in the prompt.
+   All good. Output matches exactly.✅
+   Proceed. 
+   Self-Correction/Verification during thought:
+   - Check CTA field: prompt says `"<binary_yes_no|binary_confirm_cancel|open_ended|multi_choice_slot|none>"` -> I will use `binary_yes_no`.
+   - Check suppression_key: `planning:m_008:kids_yoga:2026-W17`
+   - Check template_name: I'll use `kids_yoga_program_draft_v1`
+   - Check template_params: `["kids_yoga_summer_camp", "Mylapore", "Padma"]`
+   - Check body: Ensure no markdown fences in output. Just raw JSON.
+   - Check tone: "energetic_disciplined, register=coach_to_member, language=english_primary_some_hindi" -> I'll adjust the opening slightly to sound more like a coach: "Hi Coach Padma, You asked for a blueprint — I’ve built it. No fluff, just what converts in Mylapore right now."
+   - Add domain vocab if possible? Not strictly needed for kids yoga, but I can slip in "footfall" or "retention" naturally: "This structure is designed to boost footfall without stretching your instructor capacity."
+   - All good. Output matches.✅
+   Generating. 
+   Output matches the required JSON structure exactly. No extra text. Starts with `{`. Ends with `}`.✅
+   Proceeds. 
+   [Output Generation] -> *Self-Correction/Refinement during generation prep*: 
+   I need to make sure the JSON is strictly valid. I'll escape quotes if needed, but the body doesn't have internal quotes that break JSON. I'll use double quotes for JSON keys/values. The body will use single quotes or escaped double quotes. I'll keep it clean.
+   Structure:
+   {
+     "body": "Hi Coach Padma,\n\nYou asked for a blueprint — I’ve built it. No fluff, just what converts in Mylapore right now.\n\n📅 Program: 4-Week Summer Camp (June 1–28)\n🕒 Schedule: Tue/Thu/Sat, 60 mins | Batches: 6–

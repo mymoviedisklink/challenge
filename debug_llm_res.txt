@@ -1,0 +1,39 @@
+The user wants a WhatsApp message from Vera to Suresh (owner of Mylari South Indian Cafe).
+Context:
+- Merchant: Mylari South Indian Cafe, Indiranagar, Bangalore.
+- Owner: Suresh.
+- Intent: Corporate bulk thali package.
+- Last message from merchant: "Yes good idea, what would it look like..."
+- Task: Draft a COMPLETE concrete artifact (pricing tiers, program structure, offer copy, etc.). Be specific. Offer next logistical step. CTA: binary_yes_no or binary_confirm_cancel. send_as: vera.
+- Tone: warm_busy_practical, fellow_operator, hindi_english_natural.
+- Domain vocab: footfall, covers, AOV, RPC, table turnover, reservations, GRO, weekend brunch.
+- Taboo: best food in city, guaranteed packed house, miracle marketing, viral guarantee.
+- Rules: NO fabricated data, ONE primary CTA, NO URLs, NO long preambles, concise.
+- Output: ONLY valid JSON.
+
+Let's draft the message body carefully.
+Structure:
+- Salutation: Hi Suresh
+- Acknowledge intent & provide concrete artifact (corporate bulk thali package for Indiranagar offices)
+- Pricing tiers: e.g., Daily Office Thali @ ₹199 (min 10 pax), Weekly Pass @ ₹899, Monthly Corporate Plan @ ₹3,299 (includes 2 free deliveries)
+- Offer copy: "Mylari Office Thali: Fresh, hot, & delivered by 1 PM. GST invoice included."
+- Operational details: Pre-order cutoff 10 AM, dedicated delivery partner for bulk, GRO coordination for office floors.
+- Leverage: Specificity, Effort externalization ("I've drafted the pricing & offer copy below — just say go")
+- CTA: binary_yes_no (e.g., "Reply YES to activate this package on magicpin & start onboarding Indiranagar offices this week.")
+- Check constraints: Hindi-English natural mix? "Hi Suresh, quick one — I’ve mapped out the Corporate Bulk Thali package for Indiranagar offices. Here’s the structure:"
+- Add Hindi/English mix naturally: "Hi Suresh, quick update — I’ve drafted the Corporate Bulk Thali package for Indiranagar offices. Check the structure below:"
+- Incorporate domain vocab: AOV, footfall, GRO, table turnover.
+- Ensure no fabricated data: Use realistic but placeholder-like numbers that fit the context, or stick strictly to provided context. The prompt says "DO NOT ask more qualifying questions — they've committed. Draft a COMPLETE concrete artifact... Be specific: use locality names, realistic pricing, operational details". I will use realistic pricing based on their current offer (₹149 weekday thali) and scale it up for corporate.
+- Let's craft it carefully.
+
+Draft:
+Hi Suresh, quick one — I’ve mapped out the Corporate Bulk Thali package for Indiranagar offices. Here’s the structure:
+
+📦 **Mylari Office Thali Program**
+• **Daily Corporate Thali**: ₹199/pax (min 10 pax). Hot, fresh, delivered by 1 PM. GST invoice included.
+• **Weekly Pass**: ₹899/week (5 days). Locks in AOV & smooths weekday footfall.
+• **Monthly GRO Plan**: ₹3,299/month. Dedicated delivery slot + 2 free re-deliveries for late meetings.
+
+📝 **Offer Copy**: "Mylari Office Thali: Fresh, hot, & delivered by 1 PM. GST invoice included. Book your floor’s lunch in 2 taps."
+
+🛠

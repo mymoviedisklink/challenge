@@ -1,0 +1,11 @@
+{
+  "body": "Hi Suresh, quick update from Vera \u2014 checking in on your business. Want me to run a profile audit?",
+  "cta": "binary_yes_no",
+  "send_as": "vera",
+  "suppression_key": "planning:m_006:corp_thali:2026-W17",
+  "rationale": "Fallback message \u2014 LLM composition failed",
+  "template_name": "vera_fallback_v1",
+  "template_params": [
+    "Suresh"
+  ]
+}
