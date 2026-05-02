@@ -1,0 +1,13 @@
+{
+  "body": "Dr. Meera, here’s the draft for the '3-Month Fluoride Recall' campaign:\n\nHeadline: Protect Your Smile – 3-Month Fluoride Recall\nBody: Research shows regular fluoride varnish cuts caries risk by 38%. Book your recall visit today to maintain optimal oral health.\nOffer: Free Oral Health Check-up with Recall Visit\n\nShall I activate this for your clinic profile?",
+  "cta": "binary_yes_no",
+  "send_as": "vera",
+  "suppression_key": "research:dentists:2026-W17",
+  "rationale": "Merchant committed to action; providing the concrete campaign artifact (Option A) with a binary CTA to activate it.",
+  "template_name": "vera_research_digest_v1",
+  "template_params": [
+    "fluoride_recall_campaign",
+    "38% caries reduction",
+    "binary_yes_no"
+  ]
+}

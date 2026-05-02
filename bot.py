@@ -249,6 +249,8 @@ async def reply(body: ReplyBody):
     result = ch.handle_reply(
         conversation_id=body.conversation_id,
         merchant_id=body.merchant_id or "",
+        customer_id=body.customer_id,
+        from_role=body.from_role,
         message=body.message,
         turn_number=body.turn_number,
         conversations=conversations,

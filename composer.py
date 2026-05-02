@@ -136,13 +136,16 @@ def compose_reply(
     conversation_history: list[dict],
     merchant_message: str,
     conversation_mode: str = "normal",
+    from_role: str = "merchant",
+    customer_name: str | None = None,
 ) -> dict:
     """
     Compose a reply within an ongoing conversation.
-    conversation_mode: "action" (merchant committed) | "normal"
+    from_role: "merchant" (Vera responds to merchant) | "customer" (merchant responds on-behalf)
+    conversation_mode: "action" (committed) | "normal"
     Returns: {action: send|wait|end, body?, cta?, rationale}
     """
-    send_as = _determine_send_as(trigger, customer)
+    send_as = "merchant_on_behalf" if from_role == "customer" else "vera"
     system_prompt = build_system_prompt(category, send_as=send_as)
 
     history_str = "\n".join(
@@ -150,15 +153,70 @@ def compose_reply(
         for t in conversation_history[-6:]  # last 6 turns
     )
 
-    mode_instruction = ""
-    if conversation_mode == "action":
-        mode_instruction = (
-            "\nIMPORTANT: The merchant has committed to an action. "
-            "DO NOT ask more qualifying questions. "
-            "Draft a concrete artifact or confirm the next step immediately."
-        )
+    merchant_name = merchant.get("identity", {}).get("name", "the business")
+    owner_name = merchant.get("identity", {}).get("owner_first_name", "")
 
-    reply_prompt = f"""You are continuing an ongoing conversation. The merchant just replied.
+    # ── Build role-specific prompt ───────────────────────────────────────────
+    if from_role == "customer":
+        # Customer replied → respond AS the merchant (on-behalf)
+        cust_name = customer_name or "the customer"
+        cust_prefs = ""
+        if customer:
+            prefs = customer.get("preferences", {})
+            rel = customer.get("relationship", {})
+            services = rel.get("services_received", [])
+            if services:
+                cust_prefs += f"\n- Services history: {', '.join(services[-3:])}"
+            if prefs.get("preferred_slots"):
+                cust_prefs += f"\n- Preferred slot: {prefs['preferred_slots']}"
+
+        reply_prompt = f"""You are composing a reply ON BEHALF OF the merchant ({merchant_name}) to their customer.
+The message will appear to come FROM the business, not from Vera.
+
+CUSTOMER NAME: {cust_name}
+CUSTOMER CONTEXT:{cust_prefs if cust_prefs else ' (not available)'}
+
+CONVERSATION HISTORY (last {min(6, len(conversation_history))} turns):
+{history_str}
+
+CUSTOMER'S LATEST MESSAGE: "{merchant_message}"
+
+CRITICAL RULES:
+- Address the customer by name ("{cust_name}") at the start of your message.
+- If the customer picked a time slot or confirmed an appointment, echo the specific slot/time back to them.
+- Write as the business ({merchant_name}), NOT as Vera.
+- Keep it warm, professional, and concise.
+- If confirming a booking, include: customer name + slot + brief next-step.
+
+TASK: Respond to the customer. Choose ONE action:
+
+Option A — Send a follow-up message:
+{{"action": "send", "body": "<message addressing {cust_name} by name>", "cta": "<cta_type>", "rationale": "<why>"}}
+
+Option B — Wait:
+{{"action": "wait", "wait_seconds": <seconds>, "rationale": "<why>"}}
+
+Option C — End:
+{{"action": "end", "rationale": "<why>"}}
+
+Return ONLY valid JSON. No markdown. Start with {{ and end with }}."""
+
+    else:
+        # Merchant replied → respond AS Vera
+        mode_instruction = ""
+        if conversation_mode == "action":
+            trigger_kind = trigger.get("kind", "campaign") if trigger else "campaign"
+            kind_label = trigger_kind.replace("_", " ")
+            mode_instruction = f"""
+IMPORTANT: The merchant has committed to action ("{merchant_message}").
+DO NOT ask more qualifying questions. DO NOT use generic language like "Got it, let me draft the next step".
+Instead, take CONCRETE action specific to the {kind_label}:
+- Draft the specific artifact (campaign copy, pricing tiers, offer structure, etc.)
+- Or confirm the exact next operational step with specifics (dates, numbers, localities)
+- Use the merchant's name ({owner_name}) and reference the specific {kind_label} context.
+Be decisive and action-oriented — the merchant wants to see results, not more questions."""
+
+        reply_prompt = f"""You are continuing an ongoing conversation AS Vera (magicpin's merchant AI assistant).
 
 CONVERSATION HISTORY (last {min(6, len(conversation_history))} turns):
 {history_str}
@@ -168,7 +226,7 @@ MERCHANT'S LATEST MESSAGE: "{merchant_message}"
 
 MERCHANT CONTEXT:
 - Name: {merchant.get('identity', {}).get('name')}
-- Owner: {merchant.get('identity', {}).get('owner_first_name')}
+- Owner: {owner_name}
 - Languages: {merchant.get('identity', {}).get('languages', ['en'])}
 
 TRIGGER (original reason for conversation):
@@ -179,24 +237,44 @@ TASK: Respond to the merchant's message. Choose ONE action:
 Option A — Send a follow-up message:
 {{"action": "send", "body": "<message>", "cta": "<cta_type>", "rationale": "<why>"}}
 
-Option B — Wait before responding (merchant asked for time):
+Option B — Wait:
 {{"action": "wait", "wait_seconds": <seconds>, "rationale": "<why>"}}
 
-Option C — End the conversation (merchant opted out or conversation complete):
+Option C — End:
 {{"action": "end", "rationale": "<why>"}}
 
-Return ONLY valid JSON with the chosen option. No markdown."""
+Return ONLY valid JSON. No markdown. Start with {{ and end with }}."""
 
     raw = _call_llm(system_prompt, reply_prompt)
     result = parse_llm_json(raw)
 
+    # Normalize: if LLM returned composition format (body but no action), treat as "send"
+    if result and result.get("body") and not result.get("action"):
+        result["action"] = "send"
+
     if result is None or result.get("action") not in ("send", "wait", "end"):
-        # Default: acknowledge and continue
-        return {
-            "action": "send",
-            "body": f"Got it! Let me draft the next step for you to confirm.",
-            "cta": "open_ended",
-            "rationale": "Fallback reply — parse failed",
-        }
+        # Differentiated fallback by from_role
+        if from_role == "customer":
+            cust_name = customer_name or "there"
+            return {
+                "action": "send",
+                "body": f"{cust_name}, thank you for your message! We'll confirm the details shortly.",
+                "cta": "none",
+                "rationale": f"Fallback customer reply — addressing {cust_name} by name",
+            }
+        else:
+            owner = merchant.get("identity", {}).get("owner_first_name", "there") if merchant else "there"
+            trigger_kind = trigger.get("kind", "next steps") if trigger else "next steps"
+            kind_label = trigger_kind.replace("_", " ")
+            return {
+                "action": "send",
+                "body": (
+                    f"{owner}, noted — I'm working on the {kind_label} details now. "
+                    f"You'll have the draft ready to review shortly."
+                ),
+                "cta": "open_ended",
+                "rationale": f"Fallback merchant reply — personalized with name and trigger context",
+            }
 
     return result
+
